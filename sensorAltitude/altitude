@@ -1,0 +1,26 @@
+I2C1.setup();
+
+let bmp = require('BMP085').connect(I2C1);
+
+setInterval(function(){
+
+    bmp.getPressure(function(info){
+
+        let pressao = info.pressure;
+        let temp = info.temperature;
+        let altitude = (-(temp + 273)/0.0342)*Math.log(pressao/101325);
+        let altSensor = bmp.getAltitude(pressao, 101325);
+
+        /*console.log("P: " + pressao.toFixed(0));
+        console.log("T: " + temp.toFixed(0));
+        console.log("A: " + altitude.toFixed(2));
+        console.log("AS: " + altSensor.toFixed(2))
+        console.log();*/
+
+        Serial1.print(">")
+        Serial1.print("A:" + altitude.toFixed(2) + ",")
+        Serial1.print("AS:" + altSensor.toFixed(2) + "\r\n")
+
+    })
+
+}, 250)
